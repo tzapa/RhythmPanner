@@ -1,4 +1,4 @@
-name: Build VST3 Windows
+name: Build VST3 Windows & Mac
 
 on:
   push:
@@ -26,4 +26,26 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: RhythmPanner-VST3-Windows
+        path: build/RhythmPanner_artefacts/Release/VST3/RhythmPanner.vst3
+
+  build-mac:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Clone JUCE
+      run: git clone --depth=1 https://github.com/juce-framework/JUCE.git ../JUCE
+
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Upload VST3
+      uses: actions/upload-artifact@v4
+      with:
+        name: RhythmPanner-VST3-Mac
         path: build/RhythmPanner_artefacts/Release/VST3/RhythmPanner.vst3
